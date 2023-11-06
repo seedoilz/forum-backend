@@ -2,19 +2,20 @@ package com.wanted.project.web;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Post;
-import com.wanted.project.model.VO.PostVO;
 import com.wanted.project.service.PostService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
 
-
 /**
- * Created by CodeGenerator on 2023/02/28.
- */
+* Created by CodeGenerator on 2023/11/06.
+*/
 @RestController
 @RequestMapping("/post")
 public class PostController {
@@ -22,37 +23,31 @@ public class PostController {
     private PostService postService;
 
     @PostMapping("/add")
-    public Result poster(@RequestBody PostVO postVO){
-        postService.poster(postVO);
+    public Result add(Post post) {
+        postService.save(post);
         return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/delete")
-    public Result deletePost(@RequestParam("id") Integer id) {
+    public Result delete(@RequestParam Integer id) {
         postService.deleteById(id);
-        return ResultGenerator.genSuccessResult(id);
+        return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/update")
-    public Result updatePost(@RequestParam("id") Integer id, @RequestParam("content") String content) {
-        postService.modifyPost(id, content);
-        return ResultGenerator.genSuccessResult(id);
+    public Result update(Post post) {
+        postService.update(post);
+        return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/detail")
-    public Result findPostById(@RequestParam("id") Integer id) {
+    public Result detail(@RequestParam Integer id) {
         Post post = postService.findById(id);
         return ResultGenerator.genSuccessResult(post);
     }
 
-    @PostMapping("/list_by_userid")
-    public Result findPostsByUserId(@RequestParam("userId") Integer userId) {
-        List<Post> idList = postService.findPostsByUserId(userId);
-        return ResultGenerator.genSuccessResult(idList);
-    }
-
     @PostMapping("/list")
-    public Result listAllPosts(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<Post> list = postService.findAll();
         PageInfo pageInfo = new PageInfo(list);

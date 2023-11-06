@@ -1,8 +1,8 @@
 package com.wanted.project.service.impl;
 
-import com.wanted.project.dao.PostMapper;
-import com.wanted.project.model.Post;
-import com.wanted.project.service.PostService;
+import com.wanted.project.dao.SectionMapper;
+import com.wanted.project.model.Section;
+import com.wanted.project.service.SectionService;
 import com.wanted.project.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,8 +15,8 @@ import javax.annotation.Resource;
  */
 @Service
 @Transactional
-public class PostServiceImpl extends AbstractService<Post> implements PostService {
+public class SectionServiceImpl extends AbstractService<Section> implements SectionService {
     @Resource
-    private PostMapper postMapper;
+    private SectionMapper sectionMapper;
 
 }

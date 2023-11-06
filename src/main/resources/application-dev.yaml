@@ -1,8 +1,8 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/wanted?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/forum?useSSL=false&allowPublicKeyRetrieval=true
     username: root
-    password: yy815920
+    password: Czy026110
     driver-class-name: com.mysql.jdbc.Driver
 
   redis:
