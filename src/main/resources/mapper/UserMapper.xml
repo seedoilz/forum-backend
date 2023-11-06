@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanted.project.dao.UserMapper">
+  <resultMap id="User" type="com.wanted.project.model.User">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="password_hash" jdbcType="VARCHAR" property="passwordHash" />
+    <result column="name" jdbcType="VARCHAR" property="name" />
+    <result column="email" jdbcType="VARCHAR" property="email" />
+    <result column="avatar_id" jdbcType="INTEGER" property="avatarId" />
+    <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
+    <result column="ip_addr" jdbcType="LONGVARCHAR" property="ipAddr" />
+  </resultMap>
+
+  <insert id="createUser" parameterType="com.wanted.project.model.User" useGeneratedKeys="true" keyProperty="id">
+    insert into user(name,password_hash,email,created_at, ip_addr)
+    values (#{name}, #{passwordHash}, #{email}, #{createdAt}, #{ipAddr});
+  </insert>
+  <select id="findUserByName" resultMap="User">
+    select * from user where `name` = #{name};
+  </select>
+
+
+  <select id="findAll" resultType="com.wanted.project.model.User">
+    select * from user;
+  </select>
+</mapper>
