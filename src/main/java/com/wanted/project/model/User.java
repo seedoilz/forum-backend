@@ -27,8 +27,8 @@ public class User implements Serializable {
 
     private String email;
 
-    @Column(name = "avatar_id")
-    private Integer avatarId;
+    @Column(name = "avatar_url")
+    private String avatar_url;
 
     @Column(name = "created_at")
     @DateTimeFormat(pattern="yyyy-MM-dd")   // 页面写入数据库时格式化
@@ -38,6 +38,6 @@ public class User implements Serializable {
     @Column(name = "ip_addr")
     private String ipAddr;
 
-    private Integer coin;
+//    private Integer coin;
 
 }

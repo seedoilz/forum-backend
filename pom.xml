@@ -21,6 +21,12 @@
     </parent>
 
     <dependencies>
+        <!--阿里OSS对象存储-->
+        <dependency>
+            <groupId>com.aliyun.oss</groupId>
+            <artifactId>aliyun-sdk-oss</artifactId>
+            <version>3.8.0</version>
+        </dependency>
         <!--Spring Boot依赖-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
