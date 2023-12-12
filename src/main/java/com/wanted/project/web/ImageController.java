@@ -72,18 +72,19 @@ public class ImageController {
 
     @CrossOrigin
     @PostMapping("/upload")
-    public Result upload(@RequestParam String filename, @RequestParam("file") MultipartFile file) {
+    public Result upload( @RequestParam("file") MultipartFile file) {
         String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
         String accessKey = AliyunConfig.accessKey; // 请填写您的AccessKeySecret。
         String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。
         String bucket = AliyunConfig.bucket; // 请填写您的 bucketname 。
         String host = AliyunConfig.host; // host的格式为 bucketname.endpoint
         String dir = "avatar/"; // 用户上传文件时指定的前缀。
+        String fileName = file.getOriginalFilename();
 
         Date currentDate = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss-");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss.SSS_");
         String formattedDate = dateFormat.format(currentDate);
-        String objectName = dir + formattedDate + filename;
+        String objectName = dir + formattedDate + fileName;
 
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessId, accessKey);
 
