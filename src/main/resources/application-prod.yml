@@ -1,4 +1,10 @@
 spring:
+  data:
+    #mongoDB
+    mongodb:
+      host: 127.0.0.1
+      database: forum
+      port: 27017
   datasource:
     url: jdbc:mysql://123.249.100.181:3306/wanted?useSSL=false&allowPublicKeyRetrieval=true
     username: root

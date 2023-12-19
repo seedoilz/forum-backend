@@ -2,9 +2,9 @@ package com.wanted.project.web;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Post;
-import com.wanted.project.service.PostService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.service.impl.PostServiceImpl;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,14 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.List;
 
-/**
-* Created by CodeGenerator on 2023/11/06.
-*/
+
 @RestController
 @RequestMapping("/post")
 public class PostController {
     @Resource
-    private PostService postService;
+    private PostServiceImpl postService;
 
     @PostMapping("/add")
     public Result add(Post post) {
@@ -29,7 +27,7 @@ public class PostController {
     }
 
     @PostMapping("/delete")
-    public Result delete(@RequestParam Integer id) {
+    public Result delete(@RequestParam String id) {
         postService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
@@ -41,7 +39,7 @@ public class PostController {
     }
 
     @PostMapping("/detail")
-    public Result detail(@RequestParam Integer id) {
+    public Result detail(@RequestParam String id) {
         Post post = postService.findById(id);
         return ResultGenerator.genSuccessResult(post);
     }

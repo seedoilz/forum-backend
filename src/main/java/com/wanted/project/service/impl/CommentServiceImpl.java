@@ -10,9 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 
 
-/**
- * Created by CodeGenerator on 2023/11/06.
- */
+
 @Service
 @Transactional
 public class CommentServiceImpl extends AbstractService<Comment> implements CommentService {
