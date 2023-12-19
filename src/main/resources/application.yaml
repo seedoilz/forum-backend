@@ -3,3 +3,9 @@ server:
 spring:
   profiles:
     active: prod
+aliyun:
+  accessId: "LTAI5tR3Sj7dZieE7ezE69jy"
+  accessKey: "DNYw6SkY29rARd2E68I6jd22eVaUoQ"
+  endpoint: "oss-cn-shanghai.aliyuncs.com"
+  bucket: "study-course-seedoilz"
+  host: "https://study-course-seedoilz.oss-cn-shanghai.aliyuncs.com"

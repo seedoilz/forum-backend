@@ -1,16 +1,23 @@
 package com.wanted.project.config;
 
+import org.springframework.beans.factory.annotation.Value;
+
+import javax.validation.Valid;
+
 public class AliyunConfig {
     // RAM用户AccessKey ID
-    public static final String accessId = "LTAI5tR3Sj7dZieE7ezE69jy";
+    @Value("${aliyun.accessId}")
+    public static String accessId;
     // RAM用户AccessKey
-    public static final String accessKey = "DNYw6SkY29rARd2E68I6jd22eVaUoQ";
+    @Value("${aliyun.accessKey}")
+    public static String accessKey;
     // bucket地域地址
-    public static final String endpoint = "oss-cn-shanghai.aliyuncs.com";
+    @Value("${aliyun.endpoint}")
+    public static String endpoint;
     // bucke名称
-    public static final String bucket = "study-course-seedoilz";
+    @Value("${aliyun.bucket}")
+    public static String bucket;
     // 使用bucke名称 + bucket地域地址组合成前端上传地址
-    public static final String host = "https://study-course-seedoilz.oss-cn-shanghai.aliyuncs.com";
-    // 文件存放目录
-    public static final String dir = "avatar/";
+    @Value("${aliyun.host}")
+    public static String host;
 }
