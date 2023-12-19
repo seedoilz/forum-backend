@@ -95,6 +95,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         String jwt = JwtUtil.createJWT(id, GENERAL_EXPIRED_TIME);
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
+        map.put("id", id);
         if(redisCache.getCacheObject("login:"+id)!=null){
             return ResultGenerator.genFailResult("请勿重复登录");
         }
