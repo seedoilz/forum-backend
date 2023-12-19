@@ -71,6 +71,59 @@ public class ImageController {
     }
 
     @CrossOrigin
+    @PostMapping("/upload_avatar")
+    public Result upload_avatar( @RequestParam("file") MultipartFile file) {
+        String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
+        String accessKey = AliyunConfig.accessKey; // 请填写您的AccessKeySecret。
+        String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。
+        String bucket = AliyunConfig.bucket; // 请填写您的 bucketname 。
+        String host = AliyunConfig.host; // host的格式为 bucketname.endpoint
+        String dir = "avatar/"; // 用户上传文件时指定的前缀。
+        String fileName = file.getOriginalFilename();
+
+        Date currentDate = new Date();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss.SSS_");
+        String formattedDate = dateFormat.format(currentDate);
+        String objectName = dir + formattedDate + fileName;
+
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessId, accessKey);
+
+        // 上传文件流。
+        InputStream inputStream = null;
+        try {
+            inputStream = file.getInputStream();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            ossClient.putObject(bucket, objectName, inputStream);
+        } catch (OSSException oe) {
+            System.out.println("Caught an OSSException, which means your request made it to OSS, "
+                    + "but was rejected with an error response for some reason.");
+            System.out.println("Error Message:" + oe.getErrorMessage());
+            System.out.println("Error Code:" + oe.getErrorCode());
+            System.out.println("Request ID:" + oe.getRequestId());
+            System.out.println("Host ID:" + oe.getHostId());
+        } catch (ClientException ce) {
+            System.out.println("Caught an ClientException, which means the client encountered "
+                    + "a serious internal problem while trying to communicate with OSS, "
+                    + "such as not being able to access the network.");
+            System.out.println("Error Message:" + ce.getMessage());
+        } finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+        }
+
+        String imageUrl = host + "/" + objectName;
+        // 关闭OSSClient。
+        ossClient.shutdown();
+        return ResultGenerator.genSuccessResult(imageUrl);
+    }
+
+    @CrossOrigin
     @PostMapping("/upload")
     public Result upload( @RequestParam("file") MultipartFile file) {
         String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
@@ -78,7 +131,7 @@ public class ImageController {
         String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。
         String bucket = AliyunConfig.bucket; // 请填写您的 bucketname 。
         String host = AliyunConfig.host; // host的格式为 bucketname.endpoint
-        String dir = "avatar/"; // 用户上传文件时指定的前缀。
+        String dir = "images/"; // 用户上传文件时指定的前缀。
         String fileName = file.getOriginalFilename();
 
         Date currentDate = new Date();
