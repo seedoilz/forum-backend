@@ -21,17 +21,18 @@ public abstract class MongoDao<T>{
     protected abstract Class<T> getEntityClass();
 
     public void delete(T t) {
-        mongoTemplate.remove(t).getN();
+        mongoTemplate.remove(t);
     }
 
     public void deleteByPrimaryKey(String id){
         Criteria criteria = Criteria.where("_id").is(id);
         if(!Objects.isNull(criteria)){
             Query query = Query.query(criteria);
-            T obj = mongoTemplate.findOne(query, getEntityClass());
-            if(!Objects.isNull(obj)){
-                delete(obj);
-            }
+            mongoTemplate.remove(query, getEntityClass());
+//            T obj = mongoTemplate.findOne(query, getEntityClass());
+//            if(!Objects.isNull(obj)){
+//                delete(obj);
+//            }
         }
     }
 

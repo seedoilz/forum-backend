@@ -32,6 +32,8 @@ public abstract class AbstractService<T>{
         mapper.insertList(models);
     }
 
+    public void delete(T model){mapper.delete(model);}
+
     public void deleteById(long id) {
         mapper.deleteByPrimaryKey(id);
     }

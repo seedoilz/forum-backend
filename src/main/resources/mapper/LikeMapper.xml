@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper
-        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.wanted.project.dao.LikeMapper">
+  <resultMap id="BaseResultMap" type="com.wanted.project.model.Like">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="user_id" jdbcType="BIGINT" property="userId" />
+    <result column="post_id" jdbcType="VARCHAR" property="postId" />
+    <result column="created_at" jdbcType="DATE" property="createdAt" />
+  </resultMap>
 
-    <resultMap id="BaseResultMap" type="com.wanted.project.model.Like">
-        <id property="id" column="id" jdbcType="BIGINT"/>
-        <result property="userId" column="user_id" jdbcType="BIGINT"/>
-        <result property="postId" column="post_id" jdbcType="BIGINT"/>
-        <result property="createdAt" column="created_at" jdbcType="TIMESTAMP"/>
+    <resultMap id="Like" type="com.wanted.project.model.Like">
+            <id column="id" jdbcType="BIGINT" property="_id" />
+            <result column="user_id" jdbcType="BIGINT" property="userId" />
+            <result column="post_id" jdbcType="VARCHAR" property="postId" />
+            <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     </resultMap>
 
-    <sql id="Base_Column_List">
-        id
-        ,user_id,post_id,
-        created_at
-    </sql>
+    <select id="findLike" resultMap="Like">
+        select * from wanted.like where post_id = #{postId} and user_id = #{userId};
+    </select>
 </mapper>

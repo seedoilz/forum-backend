@@ -1,22 +1,26 @@
 package com.wanted.project.service.impl;
 
-import com.wanted.project.core.AbstractService;
+import com.wanted.project.core.AbstractMongoService;
+import com.wanted.project.dao.LikeDao;
+import com.wanted.project.dao.LikeMapper;
 import com.wanted.project.model.Like;
 import com.wanted.project.service.LikeService;
+import com.wanted.project.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Resource;
+
+
 /**
-* @author seedoilz
-* @description 针对表【like】的数据库操作Service实现
-* @createDate 2023-12-20 19:38:22
-*/
+ * Created by CodeGenerator on 2023/12/20.
+ */
 @Service
 @Transactional
-public class LikeServiceImpl extends AbstractService<Like> implements LikeService {
-
+public class LikeServiceImpl extends AbstractMongoService<Like> {
+    @Resource
+    private LikeDao likeDao;
+//    public Long findLike(Long userId, String postId){
+//        return likeMapper.findLike(userId, postId).getId();
+//    }
 }
-
-
-
-
