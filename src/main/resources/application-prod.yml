@@ -2,9 +2,12 @@ spring:
   data:
     #mongoDB
     mongodb:
-      host: 127.0.0.1
+      host: 123.249.100.181
       database: forum
       port: 27017
+      username: root
+      password: zrhispig
+      authentication-database: admin
   datasource:
     url: jdbc:mysql://123.249.100.181:3306/wanted?useSSL=false&allowPublicKeyRetrieval=true
     username: root
