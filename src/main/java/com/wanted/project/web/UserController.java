@@ -49,7 +49,7 @@ public class UserController {
     }
 
     @PostMapping("/update")
-    public Result update(User user) {
+    public Result update(@RequestBody User user) {
         userService.update(user);
         return ResultGenerator.genSuccessResult();
     }

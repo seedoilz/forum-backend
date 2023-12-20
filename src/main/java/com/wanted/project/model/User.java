@@ -39,5 +39,6 @@ public class User implements Serializable {
     private String ipAddr;
 
 //    private Integer coin;
-
+    @Column(name = "gender")
+    private int gender;
 }

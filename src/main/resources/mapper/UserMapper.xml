@@ -9,9 +9,10 @@
     <result column="password_hash" jdbcType="VARCHAR" property="passwordHash" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="email" jdbcType="VARCHAR" property="email" />
-    <result column="avatar_id" jdbcType="INTEGER" property="avatarId" />
+    <result column="avatar_url" jdbcType="VARCHAR" property="avatar_url" />
     <result column="created_at" jdbcType="TIMESTAMP" property="createdAt" />
     <result column="ip_addr" jdbcType="LONGVARCHAR" property="ipAddr" />
+    <result column="gender" jdbcType="INTEGER" property="gender" />
   </resultMap>
 
   <insert id="createUser" parameterType="com.wanted.project.model.User" useGeneratedKeys="true" keyProperty="id">
