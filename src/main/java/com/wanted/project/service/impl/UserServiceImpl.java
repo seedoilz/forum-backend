@@ -96,9 +96,9 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
         map.put("id", id);
-        if(redisCache.getCacheObject("login:"+id)!=null){
-            return ResultGenerator.genFailResult("请勿重复登录");
-        }
+//        if(redisCache.getCacheObject("login:"+id)!=null){
+//            return ResultGenerator.genFailResult("请勿重复登录");
+//        }
         redisCache.setCacheObject("login:"+id,userStatus,LOGIN_USR_TTL, TimeUnit.SECONDS);
 
         return ResultGenerator.genSuccessResult("登录成功", map);

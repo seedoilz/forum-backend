@@ -6,6 +6,7 @@ import com.wanted.project.model.VO.UserVO;
 import com.wanted.project.service.UserService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.utils.WebUtil;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,6 +56,13 @@ public class UserController {
 
     @PostMapping("/detail")
     public Result detail(@RequestParam Integer id) {
+        User user = userService.findById(id);
+        return ResultGenerator.genSuccessResult(user);
+    }
+
+    @GetMapping("/get_current_user")
+    public Result getCurrentUser(HttpServletRequest httpServletRequest){
+        Long id = WebUtil.getCurrentId(httpServletRequest);
         User user = userService.findById(id);
         return ResultGenerator.genSuccessResult(user);
     }

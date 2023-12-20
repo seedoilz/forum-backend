@@ -11,19 +11,18 @@ import com.aliyun.oss.model.PolicyConditions;
 import com.wanted.project.config.AliyunConfig;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
-import com.wanted.project.model.Comment;
 import com.wanted.project.service.UserService;
 import com.wanted.project.utils.WebUtil;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
@@ -35,15 +34,18 @@ public class ImageController {
 
     @Resource
     private UserService userService;
+    
+    @Autowired
+    private AliyunConfig aliyunConfig;
 
     @CrossOrigin
     @PostMapping("/policy")
     public Result policy() {
-        String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
-        String accessKey = AliyunConfig.accessKey; // 请填写您的AccessKeySecret。
-        String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。
-        String bucket = AliyunConfig.bucket; // 请填写您的 bucketname 。
-        String host = AliyunConfig.host; // host的格式为 bucketname.endpoint
+        String accessId = aliyunConfig.accessId; // 请填写您的AccessKeyId。
+        String accessKey = aliyunConfig.accessKey; // 请填写您的AccessKeySecret。
+        String endpoint = aliyunConfig.endpoint; // 请填写您的 endpoint。
+        String bucket = aliyunConfig.bucket; // 请填写您的 bucketname 。
+        String host = aliyunConfig.host; // host的格式为 bucketname.endpoint
         // callbackUrl为 上传回调服务器的URL，请将下面的IP和Port配置为您自己的真实信息。
         // String callbackUrl = "http://88.88.88.88:8888";
         String dir = "avatar/"; // 用户上传文件时指定的前缀。
@@ -86,11 +88,11 @@ public class ImageController {
     @CrossOrigin
     @PostMapping("/upload_avatar")
     public Result upload_avatar(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
-        String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
-        String accessKey = AliyunConfig.accessKey; // 请填写您的AccessKeySecret。
-        String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。
-        String bucket = AliyunConfig.bucket; // 请填写您的 bucketname 。
-        String host = AliyunConfig.host; // host的格式为 bucketname.endpoint
+        String accessId = aliyunConfig.accessId; // 请填写您的AccessKeyId。
+        String accessKey = aliyunConfig.accessKey; // 请填写您的AccessKeySecret。
+        String endpoint = aliyunConfig.endpoint; // 请填写您的 endpoint。
+        String bucket = aliyunConfig.bucket; // 请填写您的 bucketname 。
+        String host = aliyunConfig.host; // host的格式为 bucketname.endpoint
         String dir = "avatar/"; // 用户上传文件时指定的前缀。
         String fileName = file.getOriginalFilename();
 
@@ -140,11 +142,11 @@ public class ImageController {
     @CrossOrigin
     @PostMapping("/upload")
     public Result upload(@RequestParam("file") MultipartFile file) {
-        String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
-        String accessKey = AliyunConfig.accessKey; // 请填写您的AccessKeySecret。
-        String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。
-        String bucket = AliyunConfig.bucket; // 请填写您的 bucketname 。
-        String host = AliyunConfig.host; // host的格式为 bucketname.endpoint
+        String accessId = aliyunConfig.accessId; // 请填写您的AccessKeyId。
+        String accessKey = aliyunConfig.accessKey; // 请填写您的AccessKeySecret。
+        String endpoint = aliyunConfig.endpoint; // 请填写您的 endpoint。
+        String bucket = aliyunConfig.bucket; // 请填写您的 bucketname 。
+        String host = aliyunConfig.host; // host的格式为 bucketname.endpoint
         String dir = "images/"; // 用户上传文件时指定的前缀。
         String fileName = file.getOriginalFilename();
 
