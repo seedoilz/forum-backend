@@ -11,4 +11,6 @@ public interface UserMapper extends Mapper<User> {
     User findUserByName(String name);
 
     int createUser(User userPO);
+
+    User findUserById(Long id);
 }

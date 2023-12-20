@@ -12,6 +12,7 @@ import com.wanted.project.config.AliyunConfig;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Comment;
+import com.wanted.project.service.UserService;
 import com.wanted.project.utils.WebUtil;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -31,6 +32,9 @@ import java.util.Map;
 @RestController
 @RequestMapping("/image")
 public class ImageController {
+
+    @Resource
+    private UserService userService;
 
     @CrossOrigin
     @PostMapping("/policy")
@@ -72,6 +76,13 @@ public class ImageController {
         return ResultGenerator.genSuccessResult(respMap);
     }
 
+    /**
+     * @param
+     * @return
+     * @throws
+     * @author ruohao.zhang
+     * @date 2023/12/20 10:53
+     */
     @CrossOrigin
     @PostMapping("/upload_avatar")
     public Result upload_avatar(HttpServletRequest request, @RequestParam("file") MultipartFile file) {
@@ -120,6 +131,7 @@ public class ImageController {
         }
         Long id = WebUtil.getCurrentId(request);
         String imageUrl = host + "/" + objectName;
+        userService.updateUserAvatar(id, imageUrl);
         // 关闭OSSClient。
         ossClient.shutdown();
         return ResultGenerator.genSuccessResult(imageUrl);
@@ -127,7 +139,7 @@ public class ImageController {
 
     @CrossOrigin
     @PostMapping("/upload")
-    public Result upload( @RequestParam("file") MultipartFile file) {
+    public Result upload(@RequestParam("file") MultipartFile file) {
         String accessId = AliyunConfig.accessId; // 请填写您的AccessKeyId。
         String accessKey = AliyunConfig.accessKey; // 请填写您的AccessKeySecret。
         String endpoint = AliyunConfig.endpoint; // 请填写您的 endpoint。

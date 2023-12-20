@@ -22,7 +22,9 @@
     select * from user where `name` = #{name};
   </select>
 
-
+  <select id="findUserById" resultMap="User">
+    select * from user where `id` = #{id};
+  </select>
   <select id="findAll" resultType="com.wanted.project.model.User">
     select * from user;
   </select>

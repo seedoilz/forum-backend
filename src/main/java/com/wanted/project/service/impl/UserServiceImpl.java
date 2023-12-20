@@ -122,6 +122,22 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         return ResultGenerator.genSuccessResult("注销成功");
     }
 
+
+    /**
+     * @description
+     * @param id
+     * @param avatarUrl
+     * @return void
+     * @author ruohao.zhang
+     * @date 2023/12/20 14:51
+     */
+    @Override
+    public void updateUserAvatar(Long id, String avatarUrl){
+        User user = findById(id);
+        user.setAvatar_url(avatarUrl);
+        update(user);
+    }
+
     /**
      * findUserByName
      * @param name 用户名

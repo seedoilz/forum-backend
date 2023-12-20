@@ -18,5 +18,7 @@ public interface UserService extends Service<User> {
 
     Result signOut();
 
+    void updateUserAvatar(Long id, String avatarUrl);
+
     User findUserByName(String name);
 }
