@@ -2,10 +2,7 @@ package com.wanted.project.service.impl;
 
 import com.wanted.project.core.AbstractMongoService;
 import com.wanted.project.dao.LikeDao;
-import com.wanted.project.dao.LikeMapper;
 import com.wanted.project.model.Like;
-import com.wanted.project.service.LikeService;
-import com.wanted.project.core.AbstractService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

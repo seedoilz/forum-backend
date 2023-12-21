@@ -5,7 +5,7 @@
     <!--
       WARNING - @mbg.generated
     -->
-    <id column="id" jdbcType="BIGINT" property="id" />
+    <id column="id" jdbcType="BIGINT" property="_id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="post_id" jdbcType="VARCHAR" property="postId" />
     <result column="created_at" jdbcType="DATE" property="createdAt" />
