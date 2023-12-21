@@ -25,6 +25,8 @@ public class Post {
 
     private String content;
 
+    private List<String> imageUrls;
+
     private Boolean anony;
 
     @Column(name = "created_at")
