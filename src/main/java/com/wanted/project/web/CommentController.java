@@ -20,7 +20,7 @@ public class CommentController {
     private CommentServiceImpl commentService;
 
     @PostMapping("/add")
-    public Result add(Comment comment) {
+    public Result add(@RequestBody Comment comment) {
         commentService.save(comment);
         return ResultGenerator.genSuccessResult();
     }
@@ -32,7 +32,7 @@ public class CommentController {
     }
 
     @PostMapping("/update")
-    public Result update(Comment comment) {
+    public Result update(@RequestBody Comment comment) {
         commentService.update(comment);
         return ResultGenerator.genSuccessResult();
     }
