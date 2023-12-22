@@ -2,7 +2,6 @@ package com.wanted.project.web;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Like;
-import com.wanted.project.service.LikeService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wanted.project.service.impl.LikeServiceImpl;

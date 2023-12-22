@@ -23,6 +23,8 @@ public class Post {
     @Column(name = "user_id")
     private Long userId;
 
+    private String title;
+
     private String content;
 
     private List<String> imageUrls;

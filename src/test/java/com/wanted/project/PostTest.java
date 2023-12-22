@@ -24,9 +24,10 @@ public class PostTest extends Tester{
         tags.add("逆天");
         Post post = Post.builder()
                 .userId(0L)
+                .title("尝试一下Title")
                 .anony(false)
                 .createdAt(new Date())
-                .content("第三次发帖")
+                .content("第四次发帖")
                 .tags(tags)
                 .imageUrls(imageUrls).build();
         postDao.insert(post);
