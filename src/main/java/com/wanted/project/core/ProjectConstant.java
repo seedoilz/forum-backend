@@ -13,5 +13,5 @@ public final class ProjectConstant {
     public static final String MAPPER_INTERFACE_REFERENCE = BASE_PACKAGE + ".core.Mapper";//Mapper插件基础接口的完全限定名
 
     public static final int LOGIN_USR_TTL = 3600;
-    public static final long GENERAL_EXPIRED_TIME = 7200000;//millis
+    public static final long GENERAL_EXPIRED_TIME = 720000000;//TODO -2*0 //millis
 }

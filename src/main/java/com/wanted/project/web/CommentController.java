@@ -1,23 +1,32 @@
 package com.wanted.project.web;
+
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Comment;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.model.UserCommentLike;
 import com.wanted.project.service.impl.CommentServiceImpl;
+import com.wanted.project.service.impl.UserCommentLikeServiceImpl;
+import com.wanted.project.utils.WebUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
-* Created by CodeGenerator on 2023/11/06.
-*/
+ * Created by CodeGenerator on 2023/11/06.
+ */
 @RestController
 @RequestMapping("/comment")
 public class CommentController {
     @Resource
     private CommentServiceImpl commentService;
+
+    @Resource
+    private UserCommentLikeServiceImpl userCommentLikeService;
 
     @PostMapping("/add")
     public Result add(@RequestBody Comment comment) {
@@ -35,6 +44,44 @@ public class CommentController {
     public Result update(@RequestBody Comment comment) {
         commentService.update(comment);
         return ResultGenerator.genSuccessResult();
+    }
+
+    @GetMapping("/thumb")
+    public Result thumb(HttpServletRequest request, @RequestParam String commentId, @RequestParam String postId) {
+        Long userId = WebUtil.getCurrentId(request);
+        Comment comment = commentService.findById(commentId);
+        List<UserCommentLike> list = userCommentLikeService.findByCondition(UserCommentLike.builder().userId(userId).postId(postId).commentId(commentId).build());
+        if (!list.isEmpty()) {
+            return ResultGenerator.genFailResult("已经点赞过了");
+        }
+        UserCommentLike userCommentLike = UserCommentLike.builder().userId(userId).postId(postId).commentId(commentId).build();
+        userCommentLikeService.save(userCommentLike);
+
+        comment.setThumbs(comment.getThumbs() + 1);
+        commentService.update(comment);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @GetMapping("/cancel_thumb")
+    public Result userCancelThumbs(HttpServletRequest request, @RequestParam String commentId, @RequestParam String postId) {
+        Long userId = WebUtil.getCurrentId(request);
+        List<UserCommentLike> list = userCommentLikeService.findByCondition(UserCommentLike.builder().userId(userId).postId(postId).commentId(commentId).build());
+        userCommentLikeService.deleteById(list.get(0).get_id());
+        Comment comment = commentService.findById(commentId);
+        comment.setThumbs(comment.getThumbs() - 1);
+        commentService.update(comment);
+        return ResultGenerator.genSuccessResult();
+    }
+
+    @GetMapping("/user_thumbs")
+    public Result userThumbs(HttpServletRequest request, @RequestParam String postId) {
+        Long userId = WebUtil.getCurrentId(request);
+        List<UserCommentLike> list = userCommentLikeService.findByCondition(UserCommentLike.builder().userId(userId).postId(postId).build());
+        List<String> res = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            res.add(list.get(i).getCommentId());
+        }
+        return ResultGenerator.genSuccessResult(res);
     }
 
     @PostMapping("/detail")
