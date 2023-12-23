@@ -1,4 +1,5 @@
 package com.wanted.project.web;
+
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Post;
@@ -39,6 +40,11 @@ public class PostController {
     public Result detail(@RequestParam String id) {
         Post post = postService.findById(id);
         return ResultGenerator.genSuccessResult(post);
+    }
+
+    @GetMapping("/posts_by_tag")
+    public Result postByTag(@RequestParam String tag) {
+        return ResultGenerator.genSuccessResult(postService.getPostsByTag(tag));
     }
 
     @PostMapping("/list")
