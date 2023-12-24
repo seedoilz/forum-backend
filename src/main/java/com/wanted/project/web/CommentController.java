@@ -5,6 +5,7 @@ import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Comment;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.model.User;
 import com.wanted.project.model.UserCommentLike;
 import com.wanted.project.model.VO.CommentVO;
 import com.wanted.project.service.UserService;
@@ -104,7 +105,9 @@ public class CommentController {
         List<CommentVO> listVO = list.stream().map(comment ->{
             CommentVO vo = new CommentVO();
             BeanUtils.copyProperties(comment,vo);
-            vo.setUsername(userService.getUsernameById(vo.getUserId()));
+            User user = userService.findById(vo.getUserId());
+            vo.setUsername(user.getName());
+            vo.setAvatarUrl(user.getAvatar_url());
             if(!Objects.isNull(vo.getParentId())){
                 Comment parentComment = commentService.findById(vo.getParentId());
                 vo.setParentName(userService.getUsernameById(parentComment.getUserId()));

@@ -20,6 +20,7 @@ public class CommentVO {
     private String username;
     private String parentId;
     private String parentName;
+    private String avatarUrl;
     private String postId;
     private String content;
     private Date createdAt;
