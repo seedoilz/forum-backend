@@ -24,6 +24,14 @@ public abstract class MongoDao<T>{
         mongoTemplate.remove(t);
     }
 
+    public List<T> selectByPage(Query query, int pageNum, int pageSize){
+        int skip = (pageNum - 1) * pageSize;
+        query.skip(skip);
+        query.limit(pageSize);
+        return mongoTemplate.find(query, getEntityClass());
+    }
+
+
     public void deleteByPrimaryKey(String id){
         Criteria criteria = Criteria.where("_id").is(id);
         if(!Objects.isNull(criteria)){
@@ -49,6 +57,8 @@ public abstract class MongoDao<T>{
         Query query = Query.query(Criteria.where("_id").is(key));
         return mongoTemplate.findOne(query, getEntityClass());
     }
+
+
 
     public List<T> selectAll() {
         return mongoTemplate.findAll(getEntityClass());

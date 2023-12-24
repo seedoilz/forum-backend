@@ -51,6 +51,11 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
     @Resource
     private UserMapper userMapper;
 
+    @Override
+    public String getUsernameById(Long id) {
+        return userMapper.selectByPrimaryKey(id).getName();
+    }
+
     /**
      * 注册的业务逻辑
      * @param userVO 传入的用户VO对象

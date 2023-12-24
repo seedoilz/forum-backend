@@ -2,6 +2,7 @@ package com.wanted.project.core;
 
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.query.Query;
 import tk.mybatis.mapper.entity.Condition;
 
 import java.util.List;
@@ -42,5 +43,10 @@ public abstract class AbstractMongoService<T>{
 
     public List<T> findAll() {
         return mongoDao.selectAll();
+    }
+
+    public List<T> findAllByPage(int pageNum, int pageSize){
+        Query query = new Query();
+        return mongoDao.selectByPage(query,pageNum,pageSize);
     }
 }

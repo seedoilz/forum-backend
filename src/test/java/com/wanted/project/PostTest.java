@@ -21,16 +21,18 @@ public class PostTest extends Tester{
         imageUrls.add("https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg");
         List<String> tags = new ArrayList<>();
         tags.add("抽象");
-        tags.add("逆天");
-        Post post = Post.builder()
-                .userId(0L)
-                .title("尝试一下Title")
-                .anony(false)
-                .createdAt(new Date())
-                .content("第四次发帖")
-                .tags(tags)
-                .imageUrls(imageUrls).build();
-        postDao.insert(post);
+        for(int i = 0; i < 80; i++){
+            Post post = Post.builder()
+                    .userId(0L)
+                    .title("测试数据"+i)
+                    .anony(false)
+                    .createdAt(new Date())
+                    .content("第"+i+"次发帖")
+                    .tags(tags)
+                    .imageUrls(imageUrls).build();
+            postDao.insert(post);
+        }
+
         List<Post> res = postDao.selectAll();
         res.forEach(System.out::println);
     }

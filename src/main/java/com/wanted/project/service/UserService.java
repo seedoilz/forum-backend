@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface UserService extends Service<User> {
 
+    String getUsernameById(Long id);
+
     void register(UserVO userVO, HttpServletRequest request);
 
     Result signIn(UserVO userVO);

@@ -6,15 +6,20 @@ import com.wanted.project.model.Comment;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wanted.project.model.UserCommentLike;
+import com.wanted.project.model.VO.CommentVO;
+import com.wanted.project.service.UserService;
 import com.wanted.project.service.impl.CommentServiceImpl;
 import com.wanted.project.service.impl.UserCommentLikeServiceImpl;
 import com.wanted.project.utils.WebUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Created by CodeGenerator on 2023/11/06.
@@ -24,6 +29,9 @@ import java.util.List;
 public class CommentController {
     @Resource
     private CommentServiceImpl commentService;
+
+    @Resource
+    private UserService userService;
 
     @Resource
     private UserCommentLikeServiceImpl userCommentLikeService;
@@ -91,9 +99,19 @@ public class CommentController {
     }
 
     @GetMapping("/list_by_post")
-    public Result listByPost(@RequestParam String postId) {
+    public Result listByPost(@RequestParam String postId,@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         List<Comment> list = commentService.findByCondition(Comment.builder().postId(postId).build());
-        return ResultGenerator.genSuccessResult(list);
+        List<CommentVO> listVO = list.stream().map(comment ->{
+            CommentVO vo = new CommentVO();
+            BeanUtils.copyProperties(comment,vo);
+            vo.setUsername(userService.getUsernameById(vo.getUserId()));
+            if(!Objects.isNull(vo.getParentId())){
+                Comment parentComment = commentService.findById(vo.getParentId());
+                vo.setParentName(userService.getUsernameById(parentComment.getUserId()));
+            }
+            return vo;
+        }).collect(Collectors.toList());
+        return ResultGenerator.genSuccessResult(listVO);
     }
 
     @GetMapping("/list")

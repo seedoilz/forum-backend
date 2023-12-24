@@ -49,9 +49,7 @@ public class PostController {
 
     @PostMapping("/list")
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
-        List<Post> list = postService.findAll();
-        PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        List<Post> list = postService.findAllByPage(page, size);
+        return ResultGenerator.genSuccessResult(list);
     }
 }
