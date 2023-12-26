@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wanted.project.model.User;
 import com.wanted.project.model.UserCommentLike;
+import com.wanted.project.model.VO.CommentRootVO;
 import com.wanted.project.model.VO.CommentVO;
 import com.wanted.project.service.UserService;
 import com.wanted.project.service.impl.CommentServiceImpl;
@@ -101,18 +102,31 @@ public class CommentController {
 
     @GetMapping("/list_by_post")
     public Result listByPost(@RequestParam String postId,@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Comment> list = commentService.findByCondition(Comment.builder().postId(postId).build());
-        List<CommentVO> listVO = list.stream().map(comment ->{
-            CommentVO vo = new CommentVO();
-            BeanUtils.copyProperties(comment,vo);
-            User user = userService.findById(vo.getUserId());
-            vo.setUsername(user.getName());
-            vo.setAvatarUrl(user.getAvatar_url());
-            if(!Objects.isNull(vo.getParentId())){
-                Comment parentComment = commentService.findById(vo.getParentId());
-                vo.setParentName(userService.getUsernameById(parentComment.getUserId()));
+        List<Comment> list = commentService.findRootComments(postId);
+        List<CommentRootVO> listVO = list.stream().map(comment ->{
+            CommentRootVO rootVO = new CommentRootVO();
+            BeanUtils.copyProperties(comment,rootVO);
+            User user = userService.findById(rootVO.getUserId());
+            if(!Objects.isNull(user)){
+                rootVO.setUsername(user.getName());
+                rootVO.setAvatarUrl(user.getAvatar_url());
             }
-            return vo;
+            List<Comment> subVO = commentService.findByCondition(Comment.builder().postId(postId).rootId(rootVO.get_id()).build());
+            rootVO.setSubComments(subVO.stream().map(sub -> {
+                CommentVO vo = new CommentVO();
+                if(!Objects.isNull(sub.getParentId())){
+                    BeanUtils.copyProperties(sub,vo);
+                    User u = userService.findById(vo.getUserId());
+                    if(!Objects.isNull(u)){
+                        vo.setUsername(u.getName());
+                        vo.setAvatarUrl(u.getAvatar_url());
+                    }
+                    Comment parentComment = commentService.findById(sub.getParentId());
+                    vo.setParentName(userService.getUsernameById(parentComment.getUserId()));
+                }
+                return vo;
+            }).collect(Collectors.toList()));
+            return rootVO;
         }).collect(Collectors.toList());
         return ResultGenerator.genSuccessResult(listVO);
     }

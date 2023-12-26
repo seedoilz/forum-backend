@@ -4,25 +4,21 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommentVO {
+public class CommentRootVO {
     private String _id;
     private Long userId;
     private String username;
-    private String rootId;
-    private String parentId;
-    private String parentName;
     private String avatarUrl;
     private String postId;
+    private List<CommentVO> subComments;
     private String content;
     private Date createdAt;
     private Integer thumbs;

@@ -24,6 +24,10 @@ public abstract class MongoDao<T>{
         mongoTemplate.remove(t);
     }
 
+    public List<T> query(Query query){
+        return mongoTemplate.find(query, getEntityClass());
+    }
+
     public List<T> selectByPage(Query query, int pageNum, int pageSize){
         int skip = (pageNum - 1) * pageSize;
         query.skip(skip);

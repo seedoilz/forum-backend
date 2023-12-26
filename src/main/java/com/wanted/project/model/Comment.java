@@ -24,6 +24,9 @@ public class Comment {
     @Column(name = "parent_id")
     private String parentId;
 
+    @Column(name = "root_id")
+    private String rootId;
+
     @Column(name = "post_id")
     private String postId;
 
