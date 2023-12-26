@@ -1,17 +1,22 @@
 package com.wanted.project.web;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
+import com.wanted.project.model.Post;
 import com.wanted.project.model.UserCollection;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.model.VO.UserCollectionVO;
+import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.service.impl.UserCollectionServiceImpl;
 import com.wanted.project.utils.WebUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
 * Created by CodeGenerator on 2023/12/20.
@@ -21,6 +26,9 @@ import java.util.List;
 public class UserCollectionController {
     @Resource
     private UserCollectionServiceImpl collectionService;
+
+    @Resource
+    private PostServiceImpl postService;
 
     @PostMapping("/add")
     public Result add(@RequestBody UserCollection userCollection) {
@@ -64,11 +72,24 @@ public class UserCollectionController {
         return ResultGenerator.genSuccessResult(list);
     }
 
-    @PostMapping("/list")
-    public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+    @GetMapping("/list")
+    public Result list(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
-        List<UserCollection> list = collectionService.findAll();
-        PageInfo pageInfo = new PageInfo(list);
+        Long userId = WebUtil.getCurrentId(request);
+        List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).build());
+        List<UserCollectionVO> res = list.stream().map(userCollection -> {
+            UserCollectionVO userCollectionVO = new UserCollectionVO();
+            BeanUtils.copyProperties(userCollection, userCollectionVO);
+            Post post = postService.findById(userCollection.getPostId());
+            if (post != null){
+                userCollectionVO.setTitle(postService.findById(userCollection.getPostId()).getTitle());
+            }
+            else{
+                userCollectionVO.setTitle("帖子已删除");
+            }
+            return userCollectionVO;
+        }).collect(Collectors.toList());
+        PageInfo pageInfo = new PageInfo(res);
         return ResultGenerator.genSuccessResult(pageInfo);
     }
 }
