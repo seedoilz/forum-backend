@@ -62,9 +62,9 @@ public class PostController {
         } else {
             postVO.setCollected(false);
         }
-//        User postUser = userService.findById(post.getUserId());
-//        postVO.setName(postUser.getName());
-//        postVO.setAvatarUrl(postUser.getAvatar_url());
+        User postUser = userService.findById(post.getUserId());
+        postVO.setName(postUser.getName());
+        postVO.setAvatarUrl(postUser.getAvatar_url());
         return ResultGenerator.genSuccessResult(postVO);
     }
 
@@ -92,9 +92,9 @@ public class PostController {
             // 添加当前帖子的点赞数量
             postVO.setCollectionNum(userCollectionService.findByCondition(UserCollection.builder().postId(post.get_id()).build()).size());
             // 获得当前帖子的作者信息
-//            User postUser = userService.findById(post.getUserId());
-//            postVO.setName(postUser.getName());
-//            postVO.setAvatarUrl(postUser.getAvatar_url());
+            User postUser = userService.findById(post.getUserId());
+            postVO.setName(postUser.getName());
+            postVO.setAvatarUrl(postUser.getAvatar_url());
 
             return postVO;
         }).collect(Collectors.toList());
