@@ -1,4 +1,5 @@
 package com.wanted.project.web;
+
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Post;
@@ -19,8 +20,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
-* Created by CodeGenerator on 2023/12/20.
-*/
+ * Created by CodeGenerator on 2023/12/20.
+ */
 @RestController
 @RequestMapping("/collection")
 public class UserCollectionController {
@@ -37,7 +38,7 @@ public class UserCollectionController {
     }
 
     @PostMapping("/remove")
-    public Result remove(HttpServletRequest request, @RequestParam String postId){
+    public Result remove(HttpServletRequest request, @RequestParam String postId) {
         Long userId = WebUtil.getCurrentId(request);
         String id = collectionService.findOne(UserCollection.builder().userId(userId).postId(postId).build()).get_id();
         collectionService.deleteById(id);
@@ -66,7 +67,7 @@ public class UserCollectionController {
 //    }
 
     @GetMapping("/list_by_user")
-    public Result listByUser(HttpServletRequest request){
+    public Result listByUser(HttpServletRequest request) {
         Long userId = WebUtil.getCurrentId(request);
         List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).build());
         return ResultGenerator.genSuccessResult(list);
@@ -74,22 +75,19 @@ public class UserCollectionController {
 
     @GetMapping("/list")
     public Result list(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        PageHelper.startPage(page, size);
         Long userId = WebUtil.getCurrentId(request);
-        List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).build());
+        List<UserCollection> list = collectionService.findByPageAndCondition(UserCollection.builder().userId(userId).build(), page, size);
         List<UserCollectionVO> res = list.stream().map(userCollection -> {
             UserCollectionVO userCollectionVO = new UserCollectionVO();
             BeanUtils.copyProperties(userCollection, userCollectionVO);
             Post post = postService.findById(userCollection.getPostId());
-            if (post != null){
-                userCollectionVO.setTitle(postService.findById(userCollection.getPostId()).getTitle());
-            }
-            else{
+            if (post != null) {
+                userCollectionVO.setTitle(post.getTitle());
+            } else {
                 userCollectionVO.setTitle("帖子已删除");
             }
             return userCollectionVO;
         }).collect(Collectors.toList());
-        PageInfo pageInfo = new PageInfo(res);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        return ResultGenerator.genSuccessResult(res);
     }
 }

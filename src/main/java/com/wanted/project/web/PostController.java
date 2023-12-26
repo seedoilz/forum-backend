@@ -57,10 +57,9 @@ public class PostController {
         Long userId = WebUtil.getCurrentId(request);
         PostVO postVO = new PostVO();
         BeanUtils.copyProperties(post, postVO);
-        if (!userCollectionService.findByCondition(UserCollection.builder().userId(userId).postId(id).build()).isEmpty()){
+        if (!userCollectionService.findByCondition(UserCollection.builder().userId(userId).postId(id).build()).isEmpty()) {
             postVO.setCollected(true);
-        }
-        else{
+        } else {
             postVO.setCollected(false);
         }
 //        User postUser = userService.findById(post.getUserId());
@@ -85,10 +84,9 @@ public class PostController {
             // 添加当前用户是否收藏了这条帖子
             PostVO postVO = new PostVO();
             BeanUtils.copyProperties(post, postVO);
-            if (extractedList.contains(post.get_id())){
+            if (extractedList.contains(post.get_id())) {
                 postVO.setCollected(true);
-            }
-            else{
+            } else {
                 postVO.setCollected(false);
             }
             // 添加当前帖子的点赞数量

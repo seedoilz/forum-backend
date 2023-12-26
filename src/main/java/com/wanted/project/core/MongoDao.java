@@ -35,6 +35,23 @@ public abstract class MongoDao<T>{
         return mongoTemplate.find(query, getEntityClass());
     }
 
+    public List<T> selectByPageAndCondition(Query query, T t, int pageNum, int pageSize){
+        int skip = (pageNum - 1) * pageSize;
+        query.skip(skip);
+        query.limit(pageSize);
+
+        String[] fieldNames = getFieldName(t);
+        Criteria criteria = new Criteria();
+        for (String fieldName : fieldNames) {
+            Object fieldValue = getFieldValueByName(fieldName, t);
+            if (!Objects.isNull(fieldValue)) {
+                criteria.and(fieldName).is(fieldValue);
+            }
+        }
+        query.addCriteria(criteria);
+        return mongoTemplate.find(query, getEntityClass());
+    }
+
 
     public void deleteByPrimaryKey(String id){
         Criteria criteria = Criteria.where("_id").is(id);

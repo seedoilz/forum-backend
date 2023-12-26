@@ -7,7 +7,7 @@ import tk.mybatis.mapper.entity.Condition;
 
 import java.util.List;
 
-public abstract class AbstractMongoService<T>{
+public abstract class AbstractMongoService<T> {
     @Autowired
     protected MongoDao<T> mongoDao;
 
@@ -32,7 +32,7 @@ public abstract class AbstractMongoService<T>{
         return mongoDao.selectOne(obj);
     }
 
-    public T findById(String id){
+    public T findById(String id) {
         return mongoDao.selectByPrimaryKey(id);
     }
 
@@ -45,8 +45,13 @@ public abstract class AbstractMongoService<T>{
         return mongoDao.selectAll();
     }
 
-    public List<T> findAllByPage(int pageNum, int pageSize){
+    public List<T> findAllByPage(int pageNum, int pageSize) {
         Query query = new Query();
-        return mongoDao.selectByPage(query,pageNum,pageSize);
+        return mongoDao.selectByPage(query, pageNum, pageSize);
+    }
+
+    public List<T> findByPageAndCondition(T obj, int pageNum, int pageSize) {
+        Query query = new Query();
+        return mongoDao.selectByPageAndCondition(query, obj, pageNum, pageSize);
     }
 }
