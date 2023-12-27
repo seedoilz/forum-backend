@@ -48,11 +48,11 @@ public class UserCollectionController {
     }
 
     @GetMapping("/delete")
-    public Result delete(HttpServletRequest request, @RequestParam String postId) {
-        Long userId = WebUtil.getCurrentId(request);
+    public Result delete(HttpServletRequest request, @RequestParam String id) {
+//        Long userId = WebUtil.getCurrentId(request);
 //        collectionService.deleteById(id);
-        List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).postId(postId).build());
-        collectionService.deleteById(list.get(0).get_id());
+//        List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).postId(postId).build());
+        collectionService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 
