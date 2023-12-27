@@ -35,6 +35,11 @@ public abstract class MongoDao<T>{
         return mongoTemplate.find(query, getEntityClass());
     }
 
+    public long count(){
+        Query query = new Query();
+        return mongoTemplate.count(query, getEntityClass());
+    }
+
     public List<T> selectByPageAndCondition(Query query, T t, int pageNum, int pageSize){
         int skip = (pageNum - 1) * pageSize;
         query.skip(skip);

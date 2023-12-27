@@ -45,13 +45,23 @@ public abstract class AbstractMongoService<T> {
         return mongoDao.selectAll();
     }
 
-    public List<T> findAllByPage(int pageNum, int pageSize) {
+    public MongoPage<T> findAllByPage(int pageNum, int pageSize) {
         Query query = new Query();
-        return mongoDao.selectByPage(query, pageNum, pageSize);
+        MongoPage<T> page = new MongoPage<>();
+        page.setPageNum(pageNum);
+        page.setPageSize(pageSize);
+        page.setTotal(mongoDao.count());
+        page.setList(mongoDao.selectByPage(query, pageNum, pageSize));
+        return page;
     }
 
-    public List<T> findByPageAndCondition(T obj, int pageNum, int pageSize) {
+    public MongoPage<T> findByPageAndCondition(T obj, int pageNum, int pageSize) {
         Query query = new Query();
-        return mongoDao.selectByPageAndCondition(query, obj, pageNum, pageSize);
+        MongoPage<T> page = new MongoPage<>();
+        page.setPageNum(pageNum);
+        page.setPageSize(pageSize);
+        page.setTotal(mongoDao.selectCount(obj));
+        page.setList(mongoDao.selectByPageAndCondition(query, obj, pageNum, pageSize));
+        return page;
     }
 }

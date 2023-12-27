@@ -1,5 +1,6 @@
 package com.wanted.project.web;
 
+import com.wanted.project.core.MongoPage;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Post;
@@ -17,6 +18,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -76,8 +78,9 @@ public class UserCollectionController {
     @GetMapping("/list")
     public Result list(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         Long userId = WebUtil.getCurrentId(request);
-        List<UserCollection> list = collectionService.findByPageAndCondition(UserCollection.builder().userId(userId).build(), page, size);
-        List<UserCollectionVO> res = list.stream().map(userCollection -> {
+        MongoPage<UserCollection> list = collectionService.findByPageAndCondition(UserCollection.builder().userId(userId).build(), page, size);
+        MongoPage<UserCollectionVO> res = new MongoPage<>();
+        List<UserCollectionVO> userCollectionVOs = list.getList().stream().map(userCollection -> {
             UserCollectionVO userCollectionVO = new UserCollectionVO();
             BeanUtils.copyProperties(userCollection, userCollectionVO);
             Post post = postService.findById(userCollection.getPostId());
@@ -88,6 +91,10 @@ public class UserCollectionController {
             }
             return userCollectionVO;
         }).collect(Collectors.toList());
+        res.setList(userCollectionVOs);
+        res.setPageNum(list.getPageNum());
+        res.setPageSize(list.getPageSize());
+        res.setTotal(list.getTotal());
         return ResultGenerator.genSuccessResult(res);
     }
 }

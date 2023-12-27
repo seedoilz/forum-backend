@@ -75,7 +75,7 @@ public class PostController {
 
     @PostMapping("/list")
     public Result list(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Post> list = postService.findAllByPage(page, size);
+        List<Post> list = postService.findAllByPage(page, size).getList();
         Long userId = WebUtil.getCurrentId(request);
         List<UserCollection> userCollectionList = userCollectionService.findByCondition(UserCollection.builder().userId(userId).build());
         List<String> extractedList = userCollectionList.stream().map(UserCollection::getPostId).collect(Collectors.toList());
