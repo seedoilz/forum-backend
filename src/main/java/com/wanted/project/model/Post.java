@@ -33,6 +33,6 @@ public class Post {
 
     @Column(name = "created_at")
     private Date createdAt;
-    private String region;
+
     private List<String> tags;
 }

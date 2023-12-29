@@ -21,7 +21,6 @@ public class PostVO {
     private List<String> imageUrls;
     private Boolean anony;
     private Date createdAt;
-    private String region;
     private List<String> tags;
     private Boolean collected;
     private String name;
