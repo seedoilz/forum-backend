@@ -36,6 +36,9 @@ public class UserCollectionController {
     @PostMapping("/add")
     public Result add(@RequestBody UserCollection userCollection) {
         collectionService.save(userCollection);
+        Post post = postService.findById(userCollection.getPostId());
+        post.setCollectionNum(post.getCollectionNum()+1);
+        postService.update(post);
         return ResultGenerator.genSuccessResult();
     }
 
@@ -44,17 +47,20 @@ public class UserCollectionController {
         Long userId = WebUtil.getCurrentId(request);
         String id = collectionService.findOne(UserCollection.builder().userId(userId).postId(postId).build()).get_id();
         collectionService.deleteById(id);
+        Post post = postService.findById(postId);
+        post.setCollectionNum(post.getCollectionNum()-1);
+        postService.update(post);
         return ResultGenerator.genSuccessResult();
     }
 
-    @GetMapping("/delete")
-    public Result delete(HttpServletRequest request, @RequestParam String id) {
-//        Long userId = WebUtil.getCurrentId(request);
+//    @GetMapping("/delete")
+//    public Result delete(HttpServletRequest request, @RequestParam String id) {
+////        Long userId = WebUtil.getCurrentId(request);
+////        collectionService.deleteById(id);
+////        List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).postId(postId).build());
 //        collectionService.deleteById(id);
-//        List<UserCollection> list = collectionService.findByCondition(UserCollection.builder().userId(userId).postId(postId).build());
-        collectionService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
-    }
+//        return ResultGenerator.genSuccessResult();
+//    }
 
     @PostMapping("/update")
     public Result update(UserCollection userCollection) {

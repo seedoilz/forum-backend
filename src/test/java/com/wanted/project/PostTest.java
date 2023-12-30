@@ -23,12 +23,14 @@ public class PostTest extends Tester{
         tags.add("抽象");
         for(int i = 0; i < 80; i++){
             Post post = Post.builder()
-                    .userId(0L)
+                    .userId(10169L)
                     .title("测试数据"+i)
                     .anony(false)
                     .createdAt(new Date())
                     .content("第"+i+"次发帖")
                     .tags(tags)
+                    .collectionNum(0)
+                    .commentNum(0)
                     .imageUrls(imageUrls).build();
             postDao.insert(post);
         }

@@ -5,12 +5,14 @@ import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Comment;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.model.Post;
 import com.wanted.project.model.User;
 import com.wanted.project.model.UserCommentLike;
 import com.wanted.project.model.VO.CommentRootVO;
 import com.wanted.project.model.VO.CommentVO;
 import com.wanted.project.service.UserService;
 import com.wanted.project.service.impl.CommentServiceImpl;
+import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.service.impl.UserCommentLikeServiceImpl;
 import com.wanted.project.utils.WebUtil;
 import org.springframework.beans.BeanUtils;
@@ -36,17 +38,27 @@ public class CommentController {
     private UserService userService;
 
     @Resource
+    private PostServiceImpl postService;
+
+    @Resource
     private UserCommentLikeServiceImpl userCommentLikeService;
 
     @PostMapping("/add")
     public Result add(@RequestBody Comment comment) {
         commentService.save(comment);
+        Post post = postService.findById(comment.getPostId());
+        post.setCommentNum(post.getCommentNum()+1);
+        postService.update(post);
         return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/delete")
     public Result delete(@RequestParam String id) {
         commentService.deleteById(id);
+        Comment comment = commentService.findById(id);
+        Post post = postService.findById(comment.getPostId());
+        post.setCommentNum(post.getCommentNum()+1);
+        postService.update(post);
         return ResultGenerator.genSuccessResult();
     }
 
