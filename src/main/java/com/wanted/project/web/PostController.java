@@ -7,6 +7,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wanted.project.model.User;
 import com.wanted.project.model.UserCollection;
+import com.wanted.project.model.VO.PostOption;
 import com.wanted.project.model.VO.PostVO;
 import com.wanted.project.service.UserService;
 import com.wanted.project.service.impl.PostServiceImpl;
@@ -74,8 +75,8 @@ public class PostController {
     }
 
     @PostMapping("/list")
-    public Result list(HttpServletRequest request, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Post> list = postService.findAllByPage(page, size).getList();
+    public Result list(HttpServletRequest request, @RequestBody PostOption postOption, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        List<Post> list = postService.findAllWithOptions(postOption, page, size).getList();
         Long userId = WebUtil.getCurrentId(request);
         List<UserCollection> userCollectionList = userCollectionService.findByCondition(UserCollection.builder().userId(userId).build());
         List<String> extractedList = userCollectionList.stream().map(UserCollection::getPostId).collect(Collectors.toList());
@@ -90,7 +91,7 @@ public class PostController {
                 postVO.setCollected(false);
             }
             // 添加当前帖子的点赞数量
-            postVO.setCollectionNum(userCollectionService.findByCondition(UserCollection.builder().postId(post.get_id()).build()).size());
+//            postVO.setCollectionNum(userCollectionService.findByCondition(UserCollection.builder().postId(post.get_id()).build()).size());
             // 获得当前帖子的作者信息
             User postUser = userService.findById(post.getUserId());
             postVO.setName(postUser.getName());

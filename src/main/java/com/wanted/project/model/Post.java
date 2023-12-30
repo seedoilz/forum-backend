@@ -30,7 +30,10 @@ public class Post {
     private List<String> imageUrls;
 
     private Boolean anony;
-
+    @Column(name = "collection_num")
+    private Integer collectionNum;
+    @Column(name = "comment_num")
+    private Integer commentNum;
     @Column(name = "created_at")
     private Date createdAt;
 

@@ -26,4 +26,5 @@ public class PostVO {
     private String name;
     private String avatarUrl;
     private Integer collectionNum;
+    private Integer commentNum;
 }
