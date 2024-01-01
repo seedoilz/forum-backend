@@ -12,6 +12,7 @@ import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.service.impl.UserCollectionServiceImpl;
 import com.wanted.project.utils.WebUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -19,6 +20,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**

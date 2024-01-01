@@ -35,7 +35,9 @@ public class PostController {
     private UserService userService;
 
     @PostMapping("/add")
-    public Result add(Post post) {
+    public Result add(@RequestBody Post post) {
+        post.setCollectionNum(0);
+        post.setCommentNum(0);
         postService.save(post);
         return ResultGenerator.genSuccessResult();
     }
