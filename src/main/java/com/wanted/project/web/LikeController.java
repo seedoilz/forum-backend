@@ -4,7 +4,9 @@ import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Like;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.wanted.project.service.impl.ActionServiceImpl;
 import com.wanted.project.service.impl.LikeServiceImpl;
+import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.utils.WebUtil;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Objects;
 
 /**
 * Created by CodeGenerator on 2023/12/20.
@@ -24,9 +27,19 @@ public class LikeController {
     @Resource
     private LikeServiceImpl likeService;
 
+    @Resource
+    private ActionServiceImpl actionService;
+
+    @Resource
+    private PostServiceImpl postService;
+
     @PostMapping("/add")
     public Result add(Like like) {
         likeService.save(like);
+        Long other =postService.findById(like.getPostId()).getUserId();
+        if(!Objects.equals(other, like.getUserId())){
+            actionService.create(0,like.getUserId(),other,like.getPostId());
+        }
         return ResultGenerator.genSuccessResult();
     }
 

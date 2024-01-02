@@ -17,8 +17,31 @@ public class PostOption {
     private String sortBy;
     private String order;
 
-    public Query buildQuery(){
+    public CriteriaDefinition getTimeCriteria(){
         CriteriaDefinition timeCriteria;
+        LocalDateTime endTime = LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+        LocalDateTime startTime = endTime.minusYears(5);
+        switch (time){
+            case "所有时间":
+                break;
+            case "一天内":
+                startTime = endTime.minusDays(1);
+                break;
+            case "一周内":
+                startTime = endTime.minusDays(7);
+                break;
+            case "一月内":
+                startTime = endTime.minusDays(30);
+                break;
+            case "一年内":
+                startTime = endTime.minusDays(365);
+                break;
+        }
+        timeCriteria = Criteria.where("createdAt").lte(endTime).gte(startTime);
+        return timeCriteria;
+    }
+
+    public Sort getSort(){
         Sort.Direction dir = Sort.Direction.DESC;
         Sort sort = new Sort(dir,"collectionNum");
         switch (order){
@@ -39,25 +62,12 @@ public class PostOption {
                 sort = new Sort(dir,"commentNum");
                 break;
         }
-        LocalDateTime endTime = LocalDateTime.now().plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-        LocalDateTime startTime = endTime.minusYears(5);
-        switch (time){
-            case "所有时间":
-                break;
-            case "一天内":
-                startTime = endTime.minusDays(1);
-                break;
-            case "一周内":
-                startTime = endTime.minusDays(7);
-                break;
-            case "一月内":
-                startTime = endTime.minusDays(30);
-                break;
-            case "一年内":
-                startTime = endTime.minusDays(365);
-                break;
-        }
-        timeCriteria = Criteria.where("createdAt").lte(endTime).gte(startTime);
+        return sort;
+    }
+
+    public Query buildQuery(){
+        CriteriaDefinition timeCriteria = getTimeCriteria();
+        Sort sort = getSort();
         return Query.query(timeCriteria).with(sort);
     }
 }

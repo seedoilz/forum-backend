@@ -8,6 +8,7 @@ import com.wanted.project.model.UserCollection;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.wanted.project.model.VO.UserCollectionVO;
+import com.wanted.project.service.impl.ActionServiceImpl;
 import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.service.impl.UserCollectionServiceImpl;
 import com.wanted.project.utils.WebUtil;
@@ -35,12 +36,21 @@ public class UserCollectionController {
     @Resource
     private PostServiceImpl postService;
 
+    @Resource
+    private ActionServiceImpl actionService;
+
     @PostMapping("/add")
     public Result add(@RequestBody UserCollection userCollection) {
         collectionService.save(userCollection);
         Post post = postService.findById(userCollection.getPostId());
         post.setCollectionNum(post.getCollectionNum()+1);
         postService.update(post);
+
+        Long other =postService.findById( userCollection.getPostId()).getUserId();
+        if(!Objects.equals(other, userCollection.getUserId())){
+            actionService.create(1,userCollection.getUserId(),other,userCollection.getPostId());
+        }
+
         return ResultGenerator.genSuccessResult();
     }
 

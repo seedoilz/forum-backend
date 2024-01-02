@@ -71,9 +71,9 @@ public class PostController {
         return ResultGenerator.genSuccessResult(postVO);
     }
 
-    @GetMapping("/posts_by_tag")
-    public Result postByTag(@RequestParam String tag) {
-        return ResultGenerator.genSuccessResult(postService.getPostsByTag(tag));
+    @PostMapping("/posts_by_tag")
+    public Result postByTag(@RequestBody PostOption postOption, @RequestParam String tag, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        return ResultGenerator.genSuccessResult(postService.getPostsByTag(postOption, tag, page, size));
     }
 
     @PostMapping("/list")

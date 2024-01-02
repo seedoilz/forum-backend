@@ -28,6 +28,10 @@ public abstract class AbstractMongoService<T> {
         mongoDao.updateByPrimaryKey(model);
     }
 
+    public void updateAll(T example, T model){
+        mongoDao.updateAll(example, model);
+    }
+
     public T findOne(T obj) throws TooManyResultsException {
         return mongoDao.selectOne(obj);
     }

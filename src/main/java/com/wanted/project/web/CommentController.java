@@ -11,6 +11,7 @@ import com.wanted.project.model.UserCommentLike;
 import com.wanted.project.model.VO.CommentRootVO;
 import com.wanted.project.model.VO.CommentVO;
 import com.wanted.project.service.UserService;
+import com.wanted.project.service.impl.ActionServiceImpl;
 import com.wanted.project.service.impl.CommentServiceImpl;
 import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.service.impl.UserCommentLikeServiceImpl;
@@ -25,9 +26,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * Created by CodeGenerator on 2023/11/06.
- */
 @RestController
 @RequestMapping("/comment")
 public class CommentController {
@@ -43,12 +41,20 @@ public class CommentController {
     @Resource
     private UserCommentLikeServiceImpl userCommentLikeService;
 
+    @Resource
+    private ActionServiceImpl actionService;
+
     @PostMapping("/add")
     public Result add(@RequestBody Comment comment) {
         commentService.save(comment);
         Post post = postService.findById(comment.getPostId());
         post.setCommentNum(post.getCommentNum()+1);
         postService.update(post);
+
+        Long other =postService.findById( comment.getPostId()).getUserId();
+        if(!Objects.equals(other, comment.getUserId())){
+            actionService.create(2,comment.getUserId(),other,comment.getPostId());
+        }
         return ResultGenerator.genSuccessResult();
     }
 
@@ -80,6 +86,12 @@ public class CommentController {
         userCommentLikeService.save(userCommentLike);
 
         comment.setThumbs(comment.getThumbs() + 1);
+
+        Long other =comment.getUserId();
+        if(!Objects.equals(other, userId)){
+            actionService.create(0,userId,other,postId);
+        }
+
         commentService.update(comment);
         return ResultGenerator.genSuccessResult();
     }

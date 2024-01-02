@@ -20,8 +20,15 @@ public class PostServiceImpl extends AbstractMongoService<Post>{
     @Resource
     private PostDao postDao;
 
-    public List<Post> getPostsByTag(String tag) {
-        return postDao.getPostsByTag(tag);
+    public MongoPage<Post> getPostsByTag(PostOption postOption, String tag, int pageNum, int pageSize) {
+        Criteria criteria = Criteria.where("tags").in(tag);
+        Query query = Query.query(criteria).addCriteria(postOption.getTimeCriteria()).with(postOption.getSort());
+        MongoPage<Post> page = new MongoPage<>();
+        page.setPageNum(pageNum);
+        page.setPageSize(pageSize);
+        page.setTotal(mongoDao.selectCountByCondition(query));
+        page.setList(mongoDao.selectByPage(query, pageNum, pageSize));
+        return page;
     }
 
     public MongoPage<Post> findAllWithOptions(PostOption postOption, int pageNum, int pageSize){

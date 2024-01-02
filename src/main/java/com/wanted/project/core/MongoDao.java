@@ -148,6 +148,10 @@ public abstract class MongoDao<T>{
         return mongoTemplate.count(query, getEntityClass());
     }
 
+    public Long selectCountByCondition(Query query){
+        return mongoTemplate.count(query, getEntityClass());
+    }
+
     public T selectOne(T t) {
         Query query = Query.query(Criteria.byExample(Example.of(t)));
         return mongoTemplate.findOne(query, getEntityClass());
@@ -158,6 +162,12 @@ public abstract class MongoDao<T>{
         Query query = Query.query(Criteria.where("_id").is(id));
         Update update = getUpdateByObject(t);
         return mongoTemplate.updateFirst(query, update, getEntityClass()).getN();
+    }
+
+    public int updateAll(T example, T t){
+        Query query = getQueryByObject(example);
+        Update update = getUpdateByObject(t);
+        return mongoTemplate.updateMulti(query, update, getEntityClass()).getN();
     }
 
 //    public int updateByPrimaryKeySelective(T t) {

@@ -39,10 +39,10 @@ public class PostTest extends Tester{
         res.forEach(System.out::println);
     }
 
-    @Test
-    public void test2(){
-        String tag = "无聊";
-        List<Post> res = postDao.getPostsByTag(tag);
-        res.forEach(System.out::println);
-    }
+//    @Test
+//    public void test2(){
+//        String tag = "无聊";
+//        List<Post> res = postDao.getPostsByTag(tag);
+//        res.forEach(System.out::println);
+//    }
 }
