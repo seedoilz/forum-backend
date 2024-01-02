@@ -58,10 +58,12 @@ public class UserCollectionController {
     public Result remove(HttpServletRequest request, @RequestParam String postId) {
         Long userId = WebUtil.getCurrentId(request);
         String id = collectionService.findOne(UserCollection.builder().userId(userId).postId(postId).build()).get_id();
-        collectionService.deleteById(id);
         Post post = postService.findById(postId);
-        post.setCollectionNum(post.getCollectionNum()-1);
-        postService.update(post);
+        if(!Objects.isNull(post)) {
+            post.setCollectionNum(post.getCollectionNum() - 1);
+            postService.update(post);
+        }
+        collectionService.deleteById(id);
         return ResultGenerator.genSuccessResult();
     }
 

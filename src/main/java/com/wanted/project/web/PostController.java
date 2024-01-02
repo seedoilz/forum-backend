@@ -1,5 +1,7 @@
 package com.wanted.project.web;
 
+import com.wanted.project.core.MongoDao;
+import com.wanted.project.core.MongoPage;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Post;
@@ -72,17 +74,21 @@ public class PostController {
     }
 
     @PostMapping("/posts_by_tag")
-    public Result postByTag(@RequestBody PostOption postOption, @RequestParam String tag, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        return ResultGenerator.genSuccessResult(postService.getPostsByTag(postOption, tag, page, size));
+    public Result postByTag(HttpServletRequest request, @RequestBody PostOption postOption, @RequestParam String tag, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        MongoPage<Post> pagePO = postService.getPostsByTag(postOption, tag, page, size);
+        MongoPage<PostVO> pageVO = new MongoPage<>();
+        pageVO.setPageNum(pagePO.getPageNum());
+        pageVO.setPageSize(pagePO.getPageSize());
+        pageVO.setTotal(pagePO.getTotal());
+        List<Post> list = pagePO.getList();
+        pageVO.setList(buildPostVO(request, list));
+        return ResultGenerator.genSuccessResult(pageVO);
     }
 
-    @PostMapping("/list")
-    public Result list(HttpServletRequest request, @RequestBody PostOption postOption, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Post> list = postService.findAllWithOptions(postOption, page, size).getList();
+    private List<PostVO> buildPostVO(HttpServletRequest request, List<Post> list) {
         Long userId = WebUtil.getCurrentId(request);
         List<UserCollection> userCollectionList = userCollectionService.findByCondition(UserCollection.builder().userId(userId).build());
         List<String> extractedList = userCollectionList.stream().map(UserCollection::getPostId).collect(Collectors.toList());
-
         List<PostVO> postVOS = list.stream().map(post -> {
             // 添加当前用户是否收藏了这条帖子
             PostVO postVO = new PostVO();
@@ -98,9 +104,14 @@ public class PostController {
             User postUser = userService.findById(post.getUserId());
             postVO.setName(postUser.getName());
             postVO.setAvatarUrl(postUser.getAvatar_url());
-
             return postVO;
         }).collect(Collectors.toList());
-        return ResultGenerator.genSuccessResult(postVOS);
+        return postVOS;
+    }
+
+    @PostMapping("/list")
+    public Result list(HttpServletRequest request, @RequestBody PostOption postOption, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        List<Post> list = postService.findAllWithOptions(postOption, page, size).getList();
+        return ResultGenerator.genSuccessResult(buildPostVO(request, list));
     }
 }
