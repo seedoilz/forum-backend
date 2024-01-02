@@ -54,7 +54,7 @@ public class UserCollectionController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @PostMapping("/remove")
+    @GetMapping("/remove")
     public Result remove(HttpServletRequest request, @RequestParam String postId) {
         Long userId = WebUtil.getCurrentId(request);
         String id = collectionService.findOne(UserCollection.builder().userId(userId).postId(postId).build()).get_id();
