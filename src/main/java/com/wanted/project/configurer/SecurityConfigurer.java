@@ -1,5 +1,6 @@
 package com.wanted.project.configurer;
 
+import com.wanted.project.utils.CROSFilter;
 import com.wanted.project.utils.JwtAuthenticationTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +17,8 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
 
     @Autowired
     JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
+    @Autowired
+    CROSFilter crosFilter;
 
     /**
      * 创建密码加密的Bean
@@ -42,14 +45,14 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/sign_in").anonymous()
                 .antMatchers("/user/register").permitAll()
                 .anyRequest().authenticated();
-        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class).addFilterBefore(crosFilter, JwtAuthenticationTokenFilter.class);
     }
 
     /**
      * 注入AuthenticationManager
      * @return org.springframework.security.authentication.AuthenticationManager
      * @author haofeng.Yu
-     */ 
+     */
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception{

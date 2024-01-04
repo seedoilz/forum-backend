@@ -16,6 +16,7 @@ import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 
+import com.google.common.collect.Lists;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultCode;
 import com.wanted.project.core.ServiceException;
@@ -24,9 +25,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.ModelAndView;
@@ -98,23 +103,43 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         });
     }
 
-    //解决跨域问题
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        //registry.addMapping("/**");
-        registry.addMapping("/**")
-                // 设置允许跨域请求的域名
-                .allowedOrigins("*")
-                // 是否允许cookie
-                .allowCredentials(true)
-                // 设置允许的请求方式
-                .allowedMethods("GET", "POST", "DELETE", "PUT")
-                // 设置允许的header属性
-                .allowedHeaders("*")
-                // 跨域允许时间
-                .maxAge(3600);
+//    //解决跨域问题
+//    @Override
+//    public void addCorsMappings(CorsRegistry registry) {
+//        //registry.addMapping("/**");
+//        registry.addMapping("/**")
+//                // 设置允许跨域请求的域名
+//                .allowedOrigins("*")
+//                // 是否允许cookie
+//                .allowCredentials(true)
+//                // 设置允许的请求方式
+//                .allowedMethods("GET", "POST", "DELETE", "PUT")
+//                // 设置允许的header属性
+//                .allowedHeaders("*")
+//                // 跨域允许时间
+//                .maxAge(3600);
+//    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", addcorsConfig());
+        return new CorsFilter(source);
     }
 
+    private CorsConfiguration addcorsConfig() {
+        CorsConfiguration corsConfiguration = new CorsConfiguration();
+        List<String> list = Lists.newArrayList();
+        list.add("*");
+        corsConfiguration.setAllowedOrigins(list);
+    /*
+    // 请求常用的三种配置，*代表允许所有，当时你也可以自定义属性（比如header只能带什么，只能是post方式等等）
+    */
+        corsConfiguration.addAllowedOrigin("*");
+        corsConfiguration.addAllowedHeader("*");
+        corsConfiguration.addAllowedMethod("*");
+        return corsConfiguration;
+    }
     //添加拦截器
 //    @Override
 //    public void addInterceptors(InterceptorRegistry registry) {

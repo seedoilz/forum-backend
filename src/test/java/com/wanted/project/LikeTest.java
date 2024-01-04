@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 
-@Rollback(value = false)
+@Rollback
 public class LikeTest extends Tester{
     @Autowired
     private LikeDao likeDao;

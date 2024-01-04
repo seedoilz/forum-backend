@@ -9,7 +9,7 @@ import org.springframework.test.annotation.Rollback;
 
 import java.util.Date;
 
-@Rollback(value = false)
+@Rollback
 public class CommentTest extends Tester {
     @Autowired
     private CommentDao commentDao;
