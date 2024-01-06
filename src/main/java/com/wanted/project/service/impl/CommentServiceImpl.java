@@ -1,6 +1,7 @@
 package com.wanted.project.service.impl;
 
 import com.wanted.project.core.AbstractMongoService;
+import com.wanted.project.core.MongoPage;
 import com.wanted.project.dao.CommentDao;
 import com.wanted.project.model.Comment;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -18,8 +19,13 @@ public class CommentServiceImpl extends AbstractMongoService<Comment> {
     @Resource
     private CommentDao commentDao;
 
-    public List<Comment> findRootComments(String postId){
+    public MongoPage<Comment> findRootComments(String postId, int pageNum, int pageSize){
         Query query = Query.query(Criteria.where("postId").is(postId).and("rootId").exists(false));
-        return commentDao.query(query);
+        MongoPage<Comment> page = new MongoPage<>();
+        page.setPageSize(pageSize);
+        page.setPageNum(pageNum);
+        page.setTotal(commentDao.selectCountByCondition(query));
+        page.setList(commentDao.selectByPage(query, pageNum, pageSize));
+        return page;
     }
 }

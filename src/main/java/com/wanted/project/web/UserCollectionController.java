@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +37,9 @@ public class UserCollectionController {
     private ActionServiceImpl actionService;
 
     @PostMapping("/add")
-    public Result add(@RequestBody UserCollection userCollection) {
+    public Result add(HttpServletRequest httpServletRequest, @RequestBody UserCollection userCollection) {
+        userCollection.setUserId(WebUtil.getCurrentId(httpServletRequest));
+        userCollection.setCreatedAt(new Date());
         collectionService.save(userCollection);
         Post post = postService.findById(userCollection.getPostId());
         post.setCollectionNum(post.getCollectionNum()+1);

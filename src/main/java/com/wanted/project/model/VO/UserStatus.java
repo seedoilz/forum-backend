@@ -41,6 +41,8 @@ public class UserStatus implements UserDetails {
         return authorities;
     }
 
+    public Integer getLevel(){return user.getLevel();}
+
     @Override
     public String getPassword() {
         return user.getPasswordHash();

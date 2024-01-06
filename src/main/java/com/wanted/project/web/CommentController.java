@@ -1,5 +1,6 @@
 package com.wanted.project.web;
 
+import com.wanted.project.core.MongoPage;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
 import com.wanted.project.model.Comment;
@@ -22,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -45,7 +47,9 @@ public class CommentController {
     private ActionServiceImpl actionService;
 
     @PostMapping("/add")
-    public Result add(@RequestBody Comment comment) {
+    public Result add(HttpServletRequest httpServletRequest, @RequestBody Comment comment) {
+        comment.setUserId(WebUtil.getCurrentId(httpServletRequest));
+        comment.setCreatedAt(new Date());
         commentService.save(comment);
         Post post = postService.findById(comment.getPostId());
         post.setCommentNum(post.getCommentNum()+1);
@@ -126,8 +130,8 @@ public class CommentController {
 
     @GetMapping("/list_by_post")
     public Result listByPost(@RequestParam String postId,@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
-        List<Comment> list = commentService.findRootComments(postId);
-        List<CommentRootVO> listVO = list.stream().map(comment ->{
+        MongoPage<Comment> pagePO = commentService.findRootComments(postId, page, size);
+        List<CommentRootVO> listVO = pagePO.getList().stream().map(comment ->{
             CommentRootVO rootVO = new CommentRootVO();
             BeanUtils.copyProperties(comment,rootVO);
             User user = userService.findById(rootVO.getUserId());
@@ -152,7 +156,13 @@ public class CommentController {
             }).collect(Collectors.toList()));
             return rootVO;
         }).collect(Collectors.toList());
-        return ResultGenerator.genSuccessResult(listVO);
+
+        MongoPage<CommentRootVO> pageVO = new MongoPage<>();
+        pageVO.setPageNum(pagePO.getPageNum());
+        pageVO.setPageSize(pagePO.getPageSize());
+        pageVO.setTotal(pagePO.getTotal());
+        pageVO.setList(listVO);
+        return ResultGenerator.genSuccessResult(pageVO);
     }
 
     @GetMapping("/list")

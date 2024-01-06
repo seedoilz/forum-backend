@@ -70,6 +70,11 @@ public abstract class MongoDao<T>{
         }
     }
 
+    public void deleteByCondition(T t){
+        Query query = getQueryByObject(t);
+        mongoTemplate.remove(query, getEntityClass());
+    }
+
     public int insert(T t) {
         mongoTemplate.save(t);
         return 0;

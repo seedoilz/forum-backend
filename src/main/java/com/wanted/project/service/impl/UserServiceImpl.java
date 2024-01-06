@@ -101,6 +101,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
         Map<String, String> map = new HashMap<>();
         map.put("token", jwt);
         map.put("id", id);
+        map.put("level", userStatus.getLevel()+"");
 //        if(redisCache.getCacheObject("login:"+id)!=null){
 //            return ResultGenerator.genFailResult("请勿重复登录");
 //        }
@@ -120,6 +121,7 @@ public class UserServiceImpl extends AbstractService<User> implements UserServic
                 (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
 
         UserStatus userStatus = (UserStatus) authentication.getPrincipal();
+        SecurityContextHolder.clearContext();
         long id = userStatus.getUser().getId();
 
         redisCache.deleteObject("login:"+id);

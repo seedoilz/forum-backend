@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.Date;
 
 @Service
 @Transactional
@@ -36,6 +37,9 @@ public class ActionServiceImpl extends AbstractMongoService<Action> {
             case 2:
                 opName="评论";
                 break;
+            case 3:
+                opName="删除";
+                break;
         }
         actionDao.insert(Action.builder()
                 .opType(type).opName(opName)
@@ -44,6 +48,7 @@ public class ActionServiceImpl extends AbstractMongoService<Action> {
                 .state(0)
                 .targetId(postId)
                 .postName(postDao.selectByPrimaryKey(postId).getTitle())
+                .createdAt(new Date())
                 .build());
     }
 

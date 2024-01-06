@@ -40,4 +40,6 @@ public class User implements Serializable {
 
 //    private Integer coin;
     private Integer gender;
+
+    private Integer level;
 }

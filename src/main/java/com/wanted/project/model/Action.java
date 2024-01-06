@@ -8,6 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import java.util.Date;
 
 @Builder
 @Data
@@ -37,5 +38,7 @@ public class Action {
     private String postName;
     //0 for unread, 1 for read
     private Integer state;
+    @Column(name="created_at")
+    private Date createdAt;
 
 }

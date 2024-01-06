@@ -4,6 +4,7 @@ import com.wanted.project.core.MongoDao;
 import com.wanted.project.core.MongoPage;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
+import com.wanted.project.model.Comment;
 import com.wanted.project.model.Post;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
@@ -11,15 +12,22 @@ import com.wanted.project.model.User;
 import com.wanted.project.model.UserCollection;
 import com.wanted.project.model.VO.PostOption;
 import com.wanted.project.model.VO.PostVO;
+import com.wanted.project.model.VO.UserStatus;
 import com.wanted.project.service.UserService;
+import com.wanted.project.service.impl.ActionServiceImpl;
+import com.wanted.project.service.impl.CommentServiceImpl;
 import com.wanted.project.service.impl.PostServiceImpl;
 import com.wanted.project.service.impl.UserCollectionServiceImpl;
 import com.wanted.project.utils.WebUtil;
 import org.springframework.beans.BeanUtils;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,13 +39,21 @@ public class PostController {
     private PostServiceImpl postService;
 
     @Resource
+    private CommentServiceImpl commentService;
+
+    @Resource
     private UserCollectionServiceImpl userCollectionService;
 
     @Resource
     private UserService userService;
 
+    @Resource
+    private ActionServiceImpl actionService;
+
     @PostMapping("/add")
-    public Result add(@RequestBody Post post) {
+    public Result add(HttpServletRequest request,@RequestBody Post post) {
+        post.setUserId(WebUtil.getCurrentId(request));
+        post.setCreatedAt(new Date());
         post.setCollectionNum(0);
         post.setCommentNum(0);
         postService.save(post);
@@ -45,9 +61,18 @@ public class PostController {
     }
 
     @PostMapping("/delete")
-    public Result delete(@RequestParam String id) {
-        postService.deleteById(id);
-        return ResultGenerator.genSuccessResult();
+    public Result delete(HttpServletRequest request, @RequestParam String postId) {
+        long userId = WebUtil.getCurrentId(request);
+        Post post = postService.findById(postId);
+        if(post.getUserId().equals(userId) || WebUtil.hasPermission("admin")){
+            postService.deleteById(postId);
+            commentService.deleteAll(Comment.builder().postId(postId).build());
+            actionService.create(3,userId, post.getUserId(),postId);
+            return ResultGenerator.genSuccessResult();
+        }else{
+            return ResultGenerator.genFailResult("有没有可能你没有权限？");
+        }
+
     }
 
     @PostMapping("/update")

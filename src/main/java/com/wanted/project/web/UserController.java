@@ -25,9 +25,9 @@ public class UserController {
 
     @PostMapping("/register")
     public Result register(@RequestBody UserVO userVO, HttpServletRequest request){
-//        userService.register(userVO, request);
-        return ResultGenerator.genFailResult("暂时关闭注册~");
-//        return ResultGenerator.genSuccessResult();
+        userService.register(userVO, request);
+//        return ResultGenerator.genFailResult("暂时关闭注册~");
+        return ResultGenerator.genSuccessResult();
     }
 
     @PostMapping("/sign_in")
