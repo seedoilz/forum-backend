@@ -4,15 +4,13 @@ import com.wanted.project.core.MongoDao;
 import com.wanted.project.core.MongoPage;
 import com.wanted.project.core.Result;
 import com.wanted.project.core.ResultGenerator;
-import com.wanted.project.model.Comment;
-import com.wanted.project.model.Post;
+import com.wanted.project.model.*;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.wanted.project.model.User;
-import com.wanted.project.model.UserCollection;
 import com.wanted.project.model.VO.PostOption;
 import com.wanted.project.model.VO.PostVO;
 import com.wanted.project.model.VO.UserStatus;
+import com.wanted.project.service.SearchWordService;
 import com.wanted.project.service.UserService;
 import com.wanted.project.service.impl.ActionServiceImpl;
 import com.wanted.project.service.impl.CommentServiceImpl;
@@ -39,6 +37,9 @@ public class PostController {
     private PostServiceImpl postService;
 
     @Resource
+    private SearchWordService searchWordService;
+
+    @Resource
     private CommentServiceImpl commentService;
 
     @Resource
@@ -57,6 +58,7 @@ public class PostController {
         post.setCollectionNum(0);
         post.setCommentNum(0);
         postService.save(post);
+        searchWordService.insert(SearchWord.builder().word(post.getTitle()).build());
         return ResultGenerator.genSuccessResult();
     }
 
@@ -65,9 +67,9 @@ public class PostController {
         long userId = WebUtil.getCurrentId(request);
         Post post = postService.findById(postId);
         if(post.getUserId().equals(userId) || WebUtil.hasPermission("admin")){
+            actionService.create(3,userId, post.getUserId(),postId);
             postService.deleteById(postId);
             commentService.deleteAll(Comment.builder().postId(postId).build());
-            actionService.create(3,userId, post.getUserId(),postId);
             return ResultGenerator.genSuccessResult();
         }else{
             return ResultGenerator.genFailResult("有没有可能你没有权限？");
@@ -101,6 +103,18 @@ public class PostController {
     @PostMapping("/posts_by_tag")
     public Result postByTag(HttpServletRequest request, @RequestBody PostOption postOption, @RequestParam String tag, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         MongoPage<Post> pagePO = postService.getPostsByTag(postOption, tag, page, size);
+        MongoPage<PostVO> pageVO = new MongoPage<>();
+        pageVO.setPageNum(pagePO.getPageNum());
+        pageVO.setPageSize(pagePO.getPageSize());
+        pageVO.setTotal(pagePO.getTotal());
+        List<Post> list = pagePO.getList();
+        pageVO.setList(buildPostVO(request, list));
+        return ResultGenerator.genSuccessResult(pageVO);
+    }
+
+    @PostMapping("/posts_search")
+    public Result postSearch(HttpServletRequest request, @RequestBody PostOption postOption,@RequestParam String word, @RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
+        MongoPage<Post> pagePO = postService.getPostsByWord(postOption, word, page, size);
         MongoPage<PostVO> pageVO = new MongoPage<>();
         pageVO.setPageNum(pagePO.getPageNum());
         pageVO.setPageSize(pagePO.getPageSize());

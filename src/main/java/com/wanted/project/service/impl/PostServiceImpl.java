@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -26,8 +27,19 @@ public class PostServiceImpl extends AbstractMongoService<Post>{
         MongoPage<Post> page = new MongoPage<>();
         page.setPageNum(pageNum);
         page.setPageSize(pageSize);
-        page.setTotal(mongoDao.selectCountByCondition(query));
-        page.setList(mongoDao.selectByPage(query, pageNum, pageSize));
+        page.setTotal(postDao.selectCountByCondition(query));
+        page.setList(postDao.selectByPage(query, pageNum, pageSize));
+        return page;
+    }
+
+    public MongoPage<Post> getPostsByWord(PostOption postOption, String word, int pageNum, int pageSize) {
+        Criteria criteria = Criteria.where("title").regex(Pattern.compile("^.*" + word + ".*$", Pattern.CASE_INSENSITIVE));
+        Query query = Query.query(criteria).addCriteria(postOption.getTimeCriteria()).with(postOption.getSort());
+        MongoPage<Post> page = new MongoPage<>();
+        page.setPageNum(pageNum);
+        page.setPageSize(pageSize);
+        page.setTotal(postDao.selectCountByCondition(query));
+        page.setList(postDao.selectByPage(query, pageNum, pageSize));
         return page;
     }
 
@@ -36,8 +48,8 @@ public class PostServiceImpl extends AbstractMongoService<Post>{
         MongoPage<Post> page = new MongoPage<>();
         page.setPageNum(pageNum);
         page.setPageSize(pageSize);
-        page.setTotal(mongoDao.count());
-        page.setList(mongoDao.selectByPage(query, pageNum, pageSize));
+        page.setTotal(postDao.count());
+        page.setList(postDao.selectByPage(query, pageNum, pageSize));
         return page;
     }
 

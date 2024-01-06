@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanted.project.dao.SearchWordMapper">
+  <resultMap id="BaseResultMap" type="com.wanted.project.model.SearchWord">
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="word" jdbcType="VARCHAR" property="word" />
+    <result column="weight" jdbcType="INTEGER" property="weight" />
+  </resultMap>
+
+  <insert id="insertWord" parameterType="com.wanted.project.model.SearchWord" useGeneratedKeys="true" keyProperty="id">
+    insert ignore into search_word(word, weight)
+    values (#{word}, #{weight});
+  </insert>
+</mapper>
